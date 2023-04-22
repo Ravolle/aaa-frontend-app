@@ -2,11 +2,12 @@ from aiohttp.web import Response
 from aiohttp.web import View
 from aiohttp_jinja2 import render_template
 
+import numpy as np
+
 from lib.image import image_to_img_src
 from lib.image import PolygonDrawer
 from lib.image import open_image
 
-import numpy as np
 
 class IndexView(View):
     async def get(self) -> Response:
@@ -15,9 +16,8 @@ class IndexView(View):
     async def post(self) -> Response:
         try:
             form = await self.request.post()
-            if "image1" in form:
-
-                image = open_image(form["image1"].file)
+            if "image" in form:
+                image = open_image(form["image"].file)
             else:
                 image = open_image(form["image2"].file)
                 image = image.convert("RGB")
