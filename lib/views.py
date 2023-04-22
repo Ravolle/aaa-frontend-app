@@ -6,6 +6,7 @@ from lib.image import image_to_img_src
 from lib.image import PolygonDrawer
 from lib.image import open_image
 
+import numpy as np
 
 class IndexView(View):
     async def get(self) -> Response:
@@ -14,8 +15,14 @@ class IndexView(View):
     async def post(self) -> Response:
         try:
             form = await self.request.post()
-            image = open_image(form["image"].file)
+            if "image1" in form:
+
+                image = open_image(form["image1"].file)
+            else:
+                image = open_image(form["image2"].file)
+                image = image.convert("RGB")
             draw = PolygonDrawer(image)
+            image = np.array(image)
             model = self.request.app["model"]
             words = []
             for coords, word, accuracy in model.readtext(image):
